@@ -27,10 +27,10 @@ vim.opt.list = true
 vim.cmd("set t_Co=256")
 -- Run ":so $VIMRUNTIME/syntax/hitest.vim" to see current coloring
 
-vim.cmd("highlight DiffAdd      gui=none    guifg=NONE          guibg=#bada9f")
-vim.cmd("highlight DiffChange   gui=none    guifg=NONE          guibg=#e5d5ac")
-vim.cmd("highlight DiffDelete   gui=bold    guifg=#ff8080       guibg=#ffb0b0")
-vim.cmd("highlight DiffText     gui=none    guifg=NONE          guibg=#8cbee2")
+vim.cmd("highlight DiffAdd guifg=#bada9f guibg=NONE")
+vim.cmd("highlight DiffChange guifg=#ffd700 guibg=NONE ")
+vim.cmd("highlight DiffDelete guifg=#ff0000 guibg=#ff8080")
+vim.cmd("highlight DiffText guifg=#2010e2 guibg=NONE")
 
 vim.cmd("hi clear SpellBad")
 vim.cmd("hi SpellBad cterm=underline")
@@ -263,7 +263,27 @@ require('lazy').setup({
 		}
 		end
 	},
-	'lewis6991/gitsigns.nvim',
+	{
+		'lewis6991/gitsigns.nvim',
+		config = function()
+			require('gitsigns').setup({
+				signs = {
+					add          = { text = '│' },
+					change       = { text = '│' },
+					delete       = { text = '_' },
+					topdelete    = { text = '‾' },
+					changedelete = { text = '~' },
+					untracked    = { text = '┆' },
+				},
+			})
+		end
+	},
+	{
+		'norcalli/nvim-colorizer.lua',
+		config = function()
+			require'colorizer'.setup()
+		end
+	},
 	'neovim/nvim-lspconfig',
 	{
 		'williamboman/mason.nvim',
@@ -335,23 +355,17 @@ require('lazy').setup({
 	--]]
 	{
 		'hrsh7th/nvim-cmp',
-		dependencies = { 'neovim/nvim-lspconfig' },
-		config = function()
-		end
-	},
-	{
-		'hrsh7th/cmp-buffer',
-		dependencies = { 'hrsh7th/nvim-cmp' }
-	},
-	{
-		'hrsh7th/cmp-nvim-lsp',
 		dependencies = {
+			'neovim/nvim-lspconfig',
+			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/cmp-buffer',
 			'hrsh7th/nvim-cmp',
 			'hrsh7th/cmp-nvim-lsp',
 			'hrsh7th/nvim-cmp',
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-nvim-lsp',
-			'hrsh7th/cmp-vsnip'
+			'hrsh7th/cmp-vsnip',
+			'hrsh7th/cmp-cmdline',
 		},
 		config = function()
 			local servers = {
