@@ -6,6 +6,17 @@ local signs = {
 	Information = 'i'
 }
 
+local Colors = {
+	Orange = '#ff8200',
+	Red = '#ff8080',
+	Blue = '#33aaff',
+	Green = '#6acc4f',
+	OffWhite = '#DDDDDD',
+	White = '#FFFFFF',
+	DarkGrey = '#5b5b5b',
+	LightGrey = '#bcbcbc',
+}
+
 vim.opt.termguicolors = true
 vim.opt.tabstop=2
 vim.opt.smartcase = true
@@ -27,54 +38,53 @@ vim.opt.list = true
 vim.cmd("set t_Co=256")
 -- Run ":so $VIMRUNTIME/syntax/hitest.vim" to see current coloring
 
-vim.cmd("highlight DiffAdd guifg=#bada9f guibg=NONE")
-vim.cmd("highlight DiffChange guifg=#ffd700 guibg=NONE ")
-vim.cmd("highlight DiffDelete guifg=#ff0000 guibg=#ff8080")
-vim.cmd("highlight DiffText guifg=#2010e2 guibg=NONE")
+vim.api.nvim_set_hl(0, "DiffAdd", { fg=Colors.Green })
+vim.api.nvim_set_hl(0, "DiffChange", { fg=Colors.Orange })
+vim.api.nvim_set_hl(0, "DiffDelete", { fg=Colors.Red })
+vim.api.nvim_set_hl(0, "DiffText", { fg=Colors.Blue })
 
 vim.cmd("hi clear SpellBad")
-vim.cmd("hi SpellBad cterm=underline")
-vim.cmd("hi Normal ctermfg=White guifg=#FFFFFF guibg=#111")
--- vim.cmd("hi Normal ctermfg=250 guifg=#D3D3D3")
+-- vim.opt.spell = true
+vim.opt.spelllang = 'en_us'
+vim.api.nvim_set_hl(0, "SpellBad", { undercurl=true })
+vim.api.nvim_set_hl(0, "Normal", { ctermfg=White, fg=Colors.White })
 
-vim.cmd("hi ErrorMsg term=standout ctermbg=88 ctermfg=White guibg=#ff8080 guifg=#FFFFFF")
-vim.cmd("hi LineNr term=underline ctermfg=250 guifg=#FFFFFF")
-vim.cmd("hi Search term=reverse ctermbg=DarkGrey ctermfg=NONE guibg=#5b5b5b guifg=NONE")
-vim.cmd("hi WarningMsg term=standout ctermfg=88 guifg=#ff8080")
-vim.cmd("hi CursorLine term=underline cterm=underline")
-vim.cmd("hi Visual ctermbg=DarkGray guibg=#5b5b5b")
+vim.api.nvim_set_hl(0, "ErrorMsg", { standout=true, ctermbg=88, ctermfg=White, bg=Colors.Red, fg=Colors.White })
+vim.api.nvim_set_hl(0, "LineNr", { ctermbg=250, ctermfg=White, fg=Colors.White })
+vim.api.nvim_set_hl(0, "Search", { reverse=true, ctermbg=DarkGrey, ctermfg=NONE, bg=Colors.DarkGrey, fg=Colors.White })
+vim.api.nvim_set_hl(0, "WarningMsg", { ctermfg=88, fg=Colors.Red })
+vim.api.nvim_set_hl(0, "CursorLine", { underline=true })
+vim.api.nvim_set_hl(0, "Visual", { ctermbg=DarkGrey, bg=Colors.DarkGrey })
 vim.cmd("hi clear SignColumn")
 -- vim.cmd("set signcolumn=number")
 
-vim.cmd("hi Identifier ctermfg=39 guifg=#33aaff")
-vim.cmd("hi Constant term=underline ctermfg=210 guifg=#ff8080 guibg=#000")
-
-vim.cmd("hi Constant ctermfg=210 guifg=#ff8080")
-vim.cmd("hi Special term=bold ctermfg=165 guifg=#33aaff")
-vim.cmd("hi Statement term=bold cterm=bold ctermfg=208 gui=bold guifg=#ff8200")
-vim.cmd("hi Function term=bold cterm=bold ctermfg=208 gui=bold guifg=#ff8200")
-vim.cmd("hi Comment ctermfg=Green guifg=#6acc4f")
--- vim.cmd("hi Comment ctermfg=250 guifg=#D3D3D3")
-vim.cmd("hi Identifier ctermfg=39 guifg=#DDD")
-vim.cmd("hi Type ctermfg=34 guifg=#6acc4f")
-vim.cmd("hi PreProc term=bold cterm=bold ctermfg=Red gui=bold guifg=#e06666")
-vim.cmd("hi Ignore ctermfg=244 guifg=grey90")
-vim.cmd("hi MatchParen cterm=none ctermbg=251")
-vim.cmd("hi CoverageCovered ctermfg=34 guifg=#00ff00")
-vim.cmd("hi CoverageUncovered ctermfg=88 guifg=#ff0000")
-vim.cmd("hi PmenuSel ctermbg=LightGrey ctermfg=DarkGrey guibg=#bcbcbc guifg=#5b5b5b")
-vim.cmd("hi Pmenu ctermbg=DarkGray ctermfg=LightGrey guibg=#5b5b5b guifg=#bcbcbc")
-vim.cmd("hi NonText term=bold ctermfg=LightGrey guifg=#bcbcbc")
+vim.api.nvim_set_hl(0, "Identifier", { ctermfg=165, fg=Colors.Blue })
+vim.api.nvim_set_hl(0, "Constant", { ctermfg=210, fg=Colors.Red })
+vim.api.nvim_set_hl(0, "Special", { ctermfg=165, fg=Colors.Blue })
+vim.api.nvim_set_hl(0, "Statement", { ctermfg=208, fg=Colors.Orange })
+vim.api.nvim_set_hl(0, "Function", { ctermfg=208, fg=Colors.Orange })
+vim.api.nvim_set_hl(0, "Comment", { ctermfg=Green, fg=Colors.Green })
+vim.api.nvim_set_hl(0, "Identifier", { ctermfg=39, fg=Colors.OffWhite })
+vim.api.nvim_set_hl(0, "Type", { ctermfg=34, fg=Colors.Green })
+vim.api.nvim_set_hl(0, "PreProc", { ctermfg=210, fg=Colors.Red })
+vim.api.nvim_set_hl(0, "Ignore", { ctermfg=244, fg=grey90 })
+vim.api.nvim_set_hl(0, "MatchParen", { bg=251})
+vim.api.nvim_set_hl(0, "CoverageCovered", { ctermfg=34, fg='#00ff00'})
+vim.api.nvim_set_hl(0, "CoverageUncovered", { ctermfg=88, fg='#ff0000'})
+vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg=LightGrey, ctermfg=DarkGrey, bg=Colors.LightGrey, fg=Colors.DarkGrey })
+vim.api.nvim_set_hl(0, "Pmenu", { ctermbg=DarkGray, ctermfg=LightGrey, bg=Colors.DarkGrey, fg=Colors.LightGrey })
+vim.api.nvim_set_hl(0, "NonText", { term=bold, ctermfg=LightGrey, fg=Colors.LightGrey })
 
 
-vim.cmd("sign define DiagnosticSignError text=✘ texthl=DiagnosticSignError linehl= numhl=")
-vim.cmd("sign define DiagnosticSignWarn text=• texthl=DiagnosticSignWarn linehl= numhl=")
-vim.cmd("sign define DiagnosticSignInfo text=i texthl=DiagnosticSignInfo linehl= numhl=")
-vim.cmd("sign define DiagnosticSignHint text=! texthl=DiagnosticSignHint linehl= numhl=")
-vim.cmd("hi DiagnosticUnderlineError guifg=undercurl guisp=#ff0000")
-vim.cmd("hi DiagnosticUnderlineWarn guifg=undercurl guisp=#e5d5ac")
-vim.cmd("hi DiagnosticUnderlineInfo guifg=undercurl guisp=#33aaff")
-vim.cmd("hi DiagnosticUnderlineHint guifg=undercurl guisp=#bcbcbc")
+vim.fn.sign_define("DiagnosticSignError", {text='✘', texthl='DiagnosticSignError', linehl=NONE, numhl=NONE})
+vim.fn.sign_define("DiagnosticSignWarn", {text='•', texthl='DiagnosticSignWarn', linehl=NONE, numhl=NONE})
+vim.fn.sign_define("DiagnosticSignInfo", {text='i', texthl='DiagnosticSignInfo', linehl=NONE, numhl=NONE})
+vim.fn.sign_define("DiagnosticSignHint", {text='!', texthl='DiagnosticSignHint', linehl=NONE, numhl=NONE})
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl=true, sp='#ff0000' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl=true, sp='#e5d5ac' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl=true, sp='#33aaff' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl=true, sp='#bcbcbc' })
+
 for type, icon in pairs(signs) do
 	local hl = "LspDiagnosticsSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, linehl = "", numhl = "" })
