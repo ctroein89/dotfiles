@@ -7,9 +7,12 @@ local signs = {
 }
 
 local Colors = {
+	Black = '#222222',
 	Orange = '#ff8200',
 	Red = '#ff8080',
 	Blue = '#33aaff',
+	Purple = '#a370eb',
+	BluerBlue = '#88ddff',
 	Green = '#6acc4f',
 	OffWhite = '#DDDDDD',
 	White = '#FFFFFF',
@@ -35,6 +38,9 @@ vim.opt.listchars = {
 vim.opt.hlsearch = true
 vim.opt.number = true
 vim.opt.list = true
+vim.opt.cursorline = true
+vim.cmd("set scrolloff=999")
+
 vim.cmd("set t_Co=256")
 -- Run ":so $VIMRUNTIME/syntax/hitest.vim" to see current coloring
 
@@ -53,14 +59,16 @@ vim.api.nvim_set_hl(0, "ErrorMsg", { standout=true, ctermbg=88, ctermfg=White, b
 vim.api.nvim_set_hl(0, "LineNr", { ctermbg=250, ctermfg=White, fg=Colors.White })
 vim.api.nvim_set_hl(0, "Search", { reverse=true, ctermbg=DarkGrey, ctermfg=NONE, bg=Colors.DarkGrey, fg=Colors.White })
 vim.api.nvim_set_hl(0, "WarningMsg", { ctermfg=88, fg=Colors.Red })
-vim.api.nvim_set_hl(0, "CursorLine", { underline=true })
+-- vim.api.nvim_set_hl(0, "CursorLine", { underline=true })
+vim.api.nvim_set_hl(0, "CursorLine", { })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg=Colors.Orange, bg=Colors.Black, bold=true })
 vim.api.nvim_set_hl(0, "Visual", { ctermbg=DarkGrey, bg=Colors.DarkGrey })
 vim.cmd("hi clear SignColumn")
 -- vim.cmd("set signcolumn=number")
 
-vim.api.nvim_set_hl(0, "Identifier", { ctermfg=165, fg=Colors.Blue })
-vim.api.nvim_set_hl(0, "Constant", { ctermfg=210, fg=Colors.Red })
-vim.api.nvim_set_hl(0, "Special", { ctermfg=165, fg=Colors.Blue })
+vim.api.nvim_set_hl(0, "Identifier", { ctermfg=165, fg=Colors.Purple })
+vim.api.nvim_set_hl(0, "Constant", { ctermfg=210, fg=Colors.Blue })
+vim.api.nvim_set_hl(0, "Special", { ctermfg=165, fg=Colors.Purple })
 vim.api.nvim_set_hl(0, "Statement", { ctermfg=208, fg=Colors.Orange })
 vim.api.nvim_set_hl(0, "Function", { ctermfg=208, fg=Colors.Orange })
 vim.api.nvim_set_hl(0, "Comment", { ctermfg=Green, fg=Colors.Green })
@@ -68,7 +76,7 @@ vim.api.nvim_set_hl(0, "Identifier", { ctermfg=39, fg=Colors.OffWhite })
 vim.api.nvim_set_hl(0, "Type", { ctermfg=34, fg=Colors.Green })
 vim.api.nvim_set_hl(0, "PreProc", { ctermfg=210, fg=Colors.Red })
 vim.api.nvim_set_hl(0, "Ignore", { ctermfg=244, fg=grey90 })
-vim.api.nvim_set_hl(0, "MatchParen", { bg=251})
+vim.api.nvim_set_hl(0, "MatchParen", { fg=Colors.BluerBlue, bold=true, underline=true })
 vim.api.nvim_set_hl(0, "CoverageCovered", { ctermfg=34, fg='#00ff00'})
 vim.api.nvim_set_hl(0, "CoverageUncovered", { ctermfg=88, fg='#ff0000'})
 vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg=LightGrey, ctermfg=DarkGrey, bg=Colors.LightGrey, fg=Colors.DarkGrey })
@@ -197,9 +205,24 @@ require('lazy').setup({
 			require('lualine').setup {
 			options = {
 				icons_enabled = true,
-				theme = 'auto',
+				-- theme = 'auto',
+				theme = {
+					normal = {
+						a = { fg = Colors.Black, bg = Colors.Purple },
+						b = { fg = Colors.White, bg = Colors.DarkGrey },
+						c = { fg = Colors.OffWhite, bg = Colors.Black },
+					},
+					insert = { a = { fg = Colors.Black, bg = Colors.Blue } },
+					visual = { a = { fg = Colors.Black, bg = Colors.Green } },
+					replace = { a = { fg = Colors.Black, bg = Colors.Red } },
+					inactive = {
+						a = { fg = Colors.White, bg = Colors.Black },
+						b = { fg = Colors.White, bg = Colors.Black },
+						c = { fg = Colors.Black, bg = Colors.Black },
+					},
+				},
 				component_separators = { left = '|', right = '|'},
-				section_separators = { left = '', right = ''},
+				section_separators = { left = '', right = '' },
 				disabled_filetypes = {
 					statusline = {},
 					winbar = {},
@@ -214,20 +237,22 @@ require('lazy').setup({
 				}
 			},
 			sections = {
-				lualine_a = {'mode'},
+				lualine_a = {
+					{
+						'mode', left = '', right_padding = 2,
+					},
+				},
 				lualine_b = {
-					-- 'branch',
 					{
 						'branch',
 						icon = {
-							'🔨', -- '',
+							'', -- '🔨',
 							color = {
 								fg='green'
 							}
 						}
 					},
 					'diff',
-					-- 'diagnostics'
 					{
 						'diagnostics',
 
@@ -256,7 +281,9 @@ require('lazy').setup({
 				lualine_c = {'filename'},
 				lualine_x = {'encoding', 'fileformat', 'filetype'},
 				lualine_y = {'progress'},
-				lualine_z = {'location'}
+				lualine_z = {
+					{ 'location', separator = { right = '' }, left_padding = 2 },
+				}
 			},
 			inactive_sections = {
 				lualine_a = {},
@@ -274,16 +301,22 @@ require('lazy').setup({
 		end
 	},
 	{
+		'akinsho/bufferline.nvim',
+		config = function()
+			require('bufferline').setup()
+		end
+	},
+	{
 		'lewis6991/gitsigns.nvim',
 		config = function()
 			require('gitsigns').setup({
 				signs = {
 					add          = { text = '│' },
-					change       = { text = '│' },
+					change       = { text = '┆' },
 					delete       = { text = '_' },
 					topdelete    = { text = '‾' },
 					changedelete = { text = '~' },
-					untracked    = { text = '┆' },
+					untracked    = { text = ':' },
 				},
 			})
 		end
@@ -294,6 +327,23 @@ require('lazy').setup({
 			require'colorizer'.setup()
 		end
 	},
+	--[[
+	{
+		'HampusHauffman/block.nvim',
+		config = function()
+			require("block").setup({
+				percent = 0.8,
+				depth = 4,
+				--colors = {
+				--	"#101010",
+				--	"#1a1a1a",
+				--	"#202020",
+				--},
+				automatic = false,
+			})
+		end
+	},
+	--]]
 	'neovim/nvim-lspconfig',
 	{
 		'williamboman/mason.nvim',
@@ -319,12 +369,11 @@ require('lazy').setup({
 			})
 		end
 	},
-	--[[
-	--]]
-	--[[
-	--]]
 	{
 		'nvim-treesitter/nvim-treesitter',
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter-context'
+		},
 		run = function()
 			local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
 			ts_update()
@@ -494,6 +543,11 @@ require('lazy').setup({
 				callback({ type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 })
 			end
 		end
+	},
+	{
+		"akinsho/toggleterm.nvim",
+		version = "*",
+		config = true,
 	},
 })
 
