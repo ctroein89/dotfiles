@@ -1,0 +1,40 @@
+[core]
+	pager = delta
+	editor = nvim
+[delta]
+	navigate = true    # use n and N to move between diff sections
+	line-numbers = true
+[color]
+	ui = true
+[interactive]
+	diffFilter = delta --color-only
+[merge]
+	conflictstyle = diff3
+[diff]
+	colorMoved = default
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = "red bold 52"
+	newNormal = "green bold"
+	newHighlight = "green bold 22"
+[color "diff"]
+	meta = blue
+	frag = white bold
+	func = 146 bold
+	commit = yellow bold
+	whitespace = red reverse
+	context = normal bold
+[alias]
+	tree = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all
+	lonelytree = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+[init]
+	defaultBranch = main
+[push]
+	default = matching
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+[rerere]
+	autoUpdate = true
+	enabled = true
+[branch]
+	sort = -committerdate
