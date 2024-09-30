@@ -27,12 +27,13 @@ vim.opt.wrap = true
 -- vim.opt.linebreak = true
 -- vim.opt.breakindent = true
 vim.opt.shiftwidth = 2
--- vim.opt.listchars = { tab = ">-", trail = "~", extends = ">", precedes = "<", eol = "↲", showbreak = "↪" }
-	-- test
 vim.opt.listchars = {
 	space = ' ',
 	tab = '. ',
 	-- eol = "↲",
+	-- showbreak = "↪",
+	extends = ">",
+	precedes = "<",
 	trail = "~"
 }
 vim.opt.hlsearch = true
@@ -55,14 +56,37 @@ vim.opt.spelllang = 'en_us'
 vim.api.nvim_set_hl(0, "SpellBad", { undercurl=true })
 vim.api.nvim_set_hl(0, "Normal", { ctermfg=White, fg=Colors.White })
 
-vim.api.nvim_set_hl(0, "ErrorMsg", { standout=true, ctermbg=88, ctermfg=White, bg=Colors.Red, fg=Colors.White })
+vim.api.nvim_set_hl(
+	0,
+	"ErrorMsg",
+	{ standout=true, ctermbg=88, ctermfg=White, bg=Colors.Red, fg=Colors.White }
+)
 vim.api.nvim_set_hl(0, "LineNr", { ctermbg=250, ctermfg=White, fg=Colors.White })
-vim.api.nvim_set_hl(0, "Search", { reverse=true, ctermbg=DarkGrey, ctermfg=NONE, bg=Colors.DarkGrey, fg=Colors.White })
+vim.api.nvim_set_hl(
+	0,
+	"Search",
+	{
+		reverse=true,
+		ctermbg=DarkGrey,
+		ctermfg=NONE,
+		bg=Colors.DarkGrey,
+		fg=Colors.White
+	}
+)
 vim.api.nvim_set_hl(0, "WarningMsg", { ctermfg=88, fg=Colors.Red })
 -- vim.api.nvim_set_hl(0, "CursorLine", { underline=true })
-vim.api.nvim_set_hl(0, "CursorLine", { })
-vim.api.nvim_set_hl(0, "CursorLineNr", { fg=Colors.Orange, bg=Colors.Black, bold=true })
-vim.api.nvim_set_hl(0, "Visual", { ctermbg=DarkGrey, bg=Colors.DarkGrey })
+vim.api.nvim_set_hl(0, "CursorLine", { bg=Colors.DarkGrey })
+vim.api.nvim_set_hl(0, "Cursor", { bg=Colors.LightGrey })
+vim.api.nvim_set_hl(
+	0,
+	"CursorLineNr",
+	{
+		fg=Colors.Orange,
+		bg=Colors.Black,
+		bold=true
+	}
+)
+vim.api.nvim_set_hl(0, "Visual", { ctermbg=LightGrey, bg=Colors.DarkGrey })
 vim.cmd("hi clear SignColumn")
 -- vim.cmd("set signcolumn=number")
 
@@ -70,18 +94,43 @@ vim.api.nvim_set_hl(0, "Identifier", { ctermfg=165, fg=Colors.Purple })
 vim.api.nvim_set_hl(0, "Constant", { ctermfg=210, fg=Colors.Blue })
 vim.api.nvim_set_hl(0, "Special", { ctermfg=165, fg=Colors.Purple })
 vim.api.nvim_set_hl(0, "Statement", { ctermfg=208, fg=Colors.Orange })
-vim.api.nvim_set_hl(0, "Function", { ctermfg=208, fg=Colors.Orange })
+-- vim.api.nvim_set_hl(0, "Keyword", { ctermfg=208, fg="#ffffff" })
+vim.api.nvim_set_hl(0, "Function", { ctermfg=208, fg=Colors.Red })
 vim.api.nvim_set_hl(0, "Comment", { ctermfg=Green, fg=Colors.Green })
 vim.api.nvim_set_hl(0, "Identifier", { ctermfg=39, fg=Colors.OffWhite })
 vim.api.nvim_set_hl(0, "Type", { ctermfg=34, fg=Colors.Green })
 vim.api.nvim_set_hl(0, "PreProc", { ctermfg=210, fg=Colors.Red })
 vim.api.nvim_set_hl(0, "Ignore", { ctermfg=244, fg=grey90 })
 vim.api.nvim_set_hl(0, "MatchParen", { fg=Colors.BluerBlue, bold=true, underline=true })
-vim.api.nvim_set_hl(0, "CoverageCovered", { ctermfg=34, fg='#00ff00'})
-vim.api.nvim_set_hl(0, "CoverageUncovered", { ctermfg=88, fg='#ff0000'})
-vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg=LightGrey, ctermfg=DarkGrey, bg=Colors.LightGrey, fg=Colors.DarkGrey })
-vim.api.nvim_set_hl(0, "Pmenu", { ctermbg=DarkGray, ctermfg=LightGrey, bg=Colors.DarkGrey, fg=Colors.LightGrey })
-vim.api.nvim_set_hl(0, "NonText", { term=bold, ctermfg=LightGrey, fg=Colors.LightGrey })
+-- vim.api.nvim_set_hl(0, "CoverageCovered", { ctermfg=34, fg='#00ff00'})
+-- vim.api.nvim_set_hl(0, "CoverageUncovered", { ctermfg=88, fg='#ff0000'})
+vim.api.nvim_set_hl(
+	0,
+	"PmenuSel",
+	{
+		ctermbg=LightGrey,
+		ctermfg=DarkGrey,
+		bg=Colors.LightGrey,
+		fg=Colors.DarkGrey,
+		blend=20
+	}
+)
+vim.api.nvim_set_hl(
+	0,
+	"Pmenu",
+	{
+		ctermbg=DarkGray,
+		ctermfg=LightGrey,
+		bg=Colors.DarkGrey,
+		fg=Colors.LightGrey,
+		blend=20
+	}
+)
+vim.api.nvim_set_hl(
+	0,
+	"NonText",
+	{ term=bold, ctermfg=LightGrey, fg=Colors.LightGrey }
+)
 
 
 vim.fn.sign_define("DiagnosticSignError", {text='✘', texthl='DiagnosticSignError', linehl=NONE, numhl=NONE})
@@ -89,9 +138,26 @@ vim.fn.sign_define("DiagnosticSignWarn", {text='•', texthl='DiagnosticSignWarn
 vim.fn.sign_define("DiagnosticSignInfo", {text='i', texthl='DiagnosticSignInfo', linehl=NONE, numhl=NONE})
 vim.fn.sign_define("DiagnosticSignHint", {text='!', texthl='DiagnosticSignHint', linehl=NONE, numhl=NONE})
 vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl=true, sp='#ff0000' })
-vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl=true, sp='#e5d5ac' })
-vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl=true, sp='#33aaff' })
-vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl=true, sp='#bcbcbc' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl=false, sp='#e5d5ac' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl=false, sp='#33aaff' })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl=false, sp='#bcbcbc' })
+
+-- " gray
+vim.api.nvim_set_hl(0, "CmpItemAbbrDeprecated", {bg=NONE, gui=strikethrough, fg='#808080'})
+-- " blue
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", {bg=NONE, fg='#569CD6'})
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", {bg=NONE, fg='#569CD6'})
+--" light blue
+vim.api.nvim_set_hl(0, "CmpItemKindVariable", {bg=NONE, fg='#9CDCFE'})
+vim.api.nvim_set_hl(0, "CmpItemKindInterface", {bg=NONE, fg='#9CDCFE'})
+vim.api.nvim_set_hl(0, "CmpItemKindText", {bg=NONE, fg='#9CDCFE'})
+--" pink
+vim.api.nvim_set_hl(0, "CmpItemKindFunction", { bg=NONE, fg='#C586C0'})
+vim.api.nvim_set_hl(0, "CmpItemKindMethod", { bg=NONE, fg='#C586C0'})
+--" front
+vim.api.nvim_set_hl(0, "CmpItemKindKeyword", { bg=NONE, fg='#D4D4D4'})
+vim.api.nvim_set_hl(0, "CmpItemKindProperty", { bg=NONE, fg='#D4D4D4'})
+vim.api.nvim_set_hl(0, "CmpItemKindUnit", { bg=NONE, fg='#D4D4D4'})
 
 for type, icon in pairs(signs) do
 	local hl = "LspDiagnosticsSign" .. type
@@ -131,6 +197,14 @@ vim.api.nvim_create_autocmd(
 		command = "set expandtab"
 	}
 )
+-- automatically load the coverage signs when opening a file
+vim.api.nvim_create_autocmd({"BufEnter"}, {
+	pattern = "*.js, *.ts",
+	callback = function()
+		-- place (show) the signs immediately after loading
+		require("coverage").load(true)
+	end,
+})
 vim.api.nvim_create_autocmd(
 	{ "BufRead", "BufNewFile" },
 	{
@@ -186,6 +260,25 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = ' ' -- Make sure to set `mapleader` before lazy so your mappings are correct
 
+
+local servers = {
+	'eslint',
+	'pyright',
+	'pylsp',
+	-- 'html',
+	lua_ls = {
+		Lua = {
+			diagnostics = {
+				globals = {"vim"},
+			},
+		}
+	},
+	'gopls',
+	'vimls',
+	'bashls'
+	-- 'yaml-language-server',
+}
+
 require('lazy').setup({
 	'folke/which-key.nvim',
 	'joshdick/onedark.vim',
@@ -193,11 +286,12 @@ require('lazy').setup({
 	'rcarriga/nvim-dap-ui',
 	'theHamsta/nvim-dap-virtual-text',
 	'mbbill/undotree', -- undos
-	'fatih/vim-go', -- go
+	--  'fatih/vim-go', -- go
 	-- 'tpope/vim-sleuth', -- automatic shiftwidth and tabstop configuration
 	'leafgarland/typescript-vim',
 	'nvim-lua/plenary.nvim',
 	'MunifTanjim/nui.nvim',
+	'smithbm2316/centerpad.nvim',
 	{
 		'nvim-lualine/lualine.nvim',
 		dependencies = { 'nvim-tree/nvim-web-devicons', opt = true },
@@ -257,7 +351,12 @@ require('lazy').setup({
 						'diagnostics',
 
 						-- Table of diagnostic sources, available sources are:
-						--   'nvim_lsp', 'nvim_diagnostic', 'nvim_workspace_diagnostic', 'coc', 'ale', 'vim_lsp'.
+						--   'nvim_lsp',
+						--   'nvim_diagnostic',
+						--   'nvim_workspace_diagnostic',
+						--   'coc',
+						--   'ale',
+						--   'vim_lsp'.
 						-- or a function that returns a table as such:
 						--   { error=error_cnt, warn=warn_cnt, info=info_cnt, hint=hint_cnt }
 						sources = { 'nvim_diagnostic', 'coc' },
@@ -300,12 +399,14 @@ require('lazy').setup({
 		}
 		end
 	},
+	--[[
 	{
 		'akinsho/bufferline.nvim',
 		config = function()
 			require('bufferline').setup()
 		end
 	},
+	--]]
 	{
 		'lewis6991/gitsigns.nvim',
 		config = function()
@@ -327,6 +428,22 @@ require('lazy').setup({
 			require'colorizer'.setup()
 		end
 	},
+	{
+		'bennypowers/nvim-regexplainer',
+		dependencies = {
+			'nvim-treesitter/nvim-treesitter',
+			'MunifTanjim/nui.nvim',
+		},
+		config = function()
+			require'regexplainer'.setup()
+		end
+	},
+	{
+		"aserowy/tmux.nvim",
+		config = function()
+			require("tmux").setup()
+		end
+	},
 	--[[
 	{
 		'HampusHauffman/block.nvim',
@@ -344,7 +461,9 @@ require('lazy').setup({
 		end
 	},
 	--]]
-	'neovim/nvim-lspconfig',
+	{
+		'neovim/nvim-lspconfig',
+	},
 	{
 		'williamboman/mason.nvim',
 		config = function()
@@ -418,69 +537,81 @@ require('lazy').setup({
 			'neovim/nvim-lspconfig',
 			'hrsh7th/cmp-nvim-lsp',
 			'hrsh7th/cmp-buffer',
-			'hrsh7th/nvim-cmp',
 			'hrsh7th/cmp-nvim-lsp',
-			'hrsh7th/nvim-cmp',
 			'hrsh7th/cmp-buffer',
 			'hrsh7th/cmp-nvim-lsp',
+			'hrsh7th/vim-vsnip',
 			'hrsh7th/cmp-vsnip',
 			'hrsh7th/cmp-cmdline',
+			'onsails/lspkind.nvim',
 		},
 		config = function()
-			local servers = {
-				'eslint',
-				'pyright',
-				'gopls',
-				'bashls'
-				-- 'yaml-language-server',
+			local cmp = require('cmp')
+			local cmp_formatting = {
+				format = function(entry, vim_item)
+					if vim.tbl_contains({ 'path' }, entry.source.name) then
+						local icon, hl_group = require('nvim-web-devicons').get_icon(
+							entry:get_completion_item().label
+						)
+						if icon then
+							vim_item.kind = icon
+							vim_item.kind_hl_group = hl_group
+							return vim_item
+						end
+					end
+					-- return require('lspkind').cmp_format({ with_text = false })(entry, vim_item)
+					return require('lspkind').cmp_format({})(entry, vim_item)
+				end
 			}
-				local cmp = require('cmp')
-				cmp.setup({
-					snippet = {
-						-- REQUIRED - you must specify a snippet engine
-						expand = function(args)
-							vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-							-- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-							-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-							-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-						end,
-					},
-					window = {
-						-- completion = cmp.config.window.bordered(),
-						-- documentation = cmp.config.window.bordered(),
-					},
-					mapping = cmp.mapping.preset.insert({
-						['<C-b>'] = cmp.mapping.scroll_docs(-4),
-						['<C-f>'] = cmp.mapping.scroll_docs(4),
-						['<S-Tab>'] = cmp.mapping.complete(),
-						['<C-Space>'] = cmp.mapping.complete(),
-						['<C-e>'] = cmp.mapping.abort(),
-						['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-					}),
-					sources = cmp.config.sources({
-						{ name = 'buffer' },
-						{ name = 'nvim_lsp' },
-					}, {
-						{ name = 'buffer' },
-					})
+			cmp.setup({
+				formatting = cmp_formatting,
+				snippet = {
+					-- REQUIRED - you must specify a snippet engine
+					expand = function(args)
+						vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+						-- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+						-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+						-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+					end,
+				},
+				window = {
+					completion = cmp.config.window.bordered(),
+					documentation = cmp.config.window.bordered(),
+				},
+				mapping = cmp.mapping.preset.insert({
+					['<C-b>'] = cmp.mapping.scroll_docs(-4),
+					['<C-f>'] = cmp.mapping.scroll_docs(4),
+					['<S-Tab>'] = cmp.mapping.complete(),
+					['<C-Space>'] = cmp.mapping.complete(),
+					['<C-e>'] = cmp.mapping.abort(),
+					['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+				}),
+				sources = cmp.config.sources({
+					{ name = 'buffer' },
+					{ name = 'nvim_lsp' },
+				}, {
+					{ name = 'buffer' },
 				})
-				-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-				cmp.setup.cmdline({ '/', '?' }, {
-					mapping = cmp.mapping.preset.cmdline(),
-					sources = {
-						{ name = 'buffer' }
-					}
-				})
+			})
+			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline({ '/', '?' }, {
+				formatting = formatting,
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = {
+					{ name = 'buffer' }
+				}
+			})
 
-				-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-				cmp.setup.cmdline(':', {
-					mapping = cmp.mapping.preset.cmdline(),
-					sources = cmp.config.sources({
-						{ name = 'path' }
-					}, {
-						{ name = 'cmdline' }
-					})
+			-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline(':', {
+				formatting = formatting,
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = cmp.config.sources({
+					{ name = 'path' }
+				}, {
+					{ name = 'cmdline' }
 				})
+			})
 
 			local nvim_lsp = require('lspconfig')
 			local on_attach = function(client, bufnr)
@@ -522,10 +653,49 @@ require('lazy').setup({
 				local opts = {
 					on_attach = on_attach,
 					capabilities = capabilities,
+					settings = lsp.settings
 				}
 
 				nvim_lsp[lsp].setup(opts)
 			end
+			nvim_lsp.pylsp.setup {
+				cmd = {"pylsp"},
+				filetypes = {"python"},
+				settings = {
+					pylsp = {
+						-- configurationSources = {"flake8"},
+						plugins = {
+							--[[
+							jedi_completion = {enabled = true},
+							jedi_hover = {enabled = true},
+							jedi_references = {enabled = true},
+							jedi_signature_help = {enabled = true},
+							jedi_symbols = {enabled = true, all_scopes = true},
+							]]--
+							pycodestyle = {enabled = false},
+							flake8 = {
+								enabled = false,
+								ignore = {},
+								maxLineLength = 160
+							},
+							mypy = {enabled = false},
+							isort = {enabled = false},
+							yapf = {enabled = false},
+							--pylint = {enabled = true, executable = "python3 -m pylint"},
+							--
+							pylint = {
+								enabled = true,
+								args = {'--ignore=E1131'},
+							},
+							pydocstyle = {enabled = false},
+							mccabe = {enabled = false},
+							preload = {enabled = false},
+							rope_completion = {enabled = false}
+						}
+					}
+				},
+				on_attach = on_attach
+			}
 		end
 	},
 	{
@@ -540,7 +710,11 @@ require('lazy').setup({
 				}
 			}
 			dap.adapters.nlua = function(callback, config)
-				callback({ type = 'server', host = config.host or '127.0.0.1', port = config.port or 8086 })
+				callback({
+					type = 'server',
+					host = config.host or '127.0.0.1',
+					port = config.port or 8086
+				})
 			end
 		end
 	},
@@ -549,7 +723,31 @@ require('lazy').setup({
 		version = "*",
 		config = true,
 	},
+	{
+		"lukas-reineke/virt-column.nvim", opts = {
+			char = {
+				"⋮",
+				"¦",
+				"|"
+				-- "‖",
+			},
+			virtcolumn = "+1,80,100,120"
+		}
+	},
+	{
+		'nvim-telescope/telescope.nvim',
+		tag = '0.1.4',
+		dependencies = { 'nvim-lua/plenary.nvim' }
+	},
+	{
+		'https://codeberg.org/esensar/nvim-dev-container',
+		dependencies = 'nvim-treesitter/nvim-treesitter',
+		config = function()
+			require("devcontainer").setup{}
+		end
+	},
 })
+
 
 -- vim.wo.foldmethod = 'expr'
 -- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
