@@ -7,26 +7,29 @@ local signs = {
 }
 
 local Colors = {
-	Black = '#222222',
+	Black = '#282828',
 	Orange = '#ff8200',
 	Red = '#ff8080',
 	Blue = '#33aaff',
 	Purple = '#a370eb',
 	BluerBlue = '#88ddff',
 	Green = '#6acc4f',
-	OffWhite = '#DDDDDD',
-	White = '#FFFFFF',
+	GruvGreen = '#54A33F',
+	Cyan = '#689d6a',
+	OffWhite = '#ebdbb2',
+	White = '#fdf5e0',
 	DarkGrey = '#5b5b5b',
-	LightGrey = '#bcbcbc',
+	OtherGrey = '#333333',
+	LightGrey = '#cac4b3',
 }
 
 vim.opt.termguicolors = true
-vim.opt.tabstop=2
+vim.opt.tabstop=4
 vim.opt.smartcase = true
 vim.opt.wrap = true
 -- vim.opt.linebreak = true
 -- vim.opt.breakindent = true
-vim.opt.shiftwidth = 2
+vim.opt.shiftwidth = 4
 vim.opt.listchars = {
 	space = ' ',
 	tab = '. ',
@@ -74,30 +77,30 @@ vim.api.nvim_set_hl(
 	}
 )
 vim.api.nvim_set_hl(0, "WarningMsg", { ctermfg=88, fg=Colors.Red })
--- vim.api.nvim_set_hl(0, "CursorLine", { underline=true })
-vim.api.nvim_set_hl(0, "CursorLine", { bg=Colors.DarkGrey })
-vim.api.nvim_set_hl(0, "Cursor", { bg=Colors.LightGrey })
 vim.api.nvim_set_hl(
 	0,
 	"CursorLineNr",
 	{
 		fg=Colors.Orange,
-		bg=Colors.Black,
 		bold=true
 	}
 )
+vim.api.nvim_set_hl(0, "CursorLine", { bg=Colors.OtherGrey })
+vim.api.nvim_set_hl(0, "Cursor", { fg=Colors.Black, bg=Colors.White })
 vim.api.nvim_set_hl(0, "Visual", { ctermbg=LightGrey, bg=Colors.DarkGrey })
 vim.cmd("hi clear SignColumn")
 -- vim.cmd("set signcolumn=number")
 
+vim.api.nvim_set_hl(0, "@variable", { ctermfg=White, fg=Colors.White })
 vim.api.nvim_set_hl(0, "Identifier", { ctermfg=165, fg=Colors.Purple })
 vim.api.nvim_set_hl(0, "Constant", { ctermfg=210, fg=Colors.Blue })
 vim.api.nvim_set_hl(0, "Special", { ctermfg=165, fg=Colors.Purple })
 vim.api.nvim_set_hl(0, "Statement", { ctermfg=208, fg=Colors.Orange })
 -- vim.api.nvim_set_hl(0, "Keyword", { ctermfg=208, fg="#ffffff" })
 vim.api.nvim_set_hl(0, "Function", { ctermfg=208, fg=Colors.Red })
-vim.api.nvim_set_hl(0, "Comment", { ctermfg=Green, fg=Colors.Green })
+vim.api.nvim_set_hl(0, "Comment", { ctermfg=Green, fg=Colors.Cyan })
 vim.api.nvim_set_hl(0, "Identifier", { ctermfg=39, fg=Colors.OffWhite })
+vim.api.nvim_set_hl(0, "String", { ctermfg=Green, fg=Colors.GruvGreen })
 vim.api.nvim_set_hl(0, "Type", { ctermfg=34, fg=Colors.Green })
 vim.api.nvim_set_hl(0, "PreProc", { ctermfg=210, fg=Colors.Red })
 vim.api.nvim_set_hl(0, "Ignore", { ctermfg=244, fg=grey90 })
