@@ -6,22 +6,7 @@ local signs = {
 	Information = 'i'
 }
 
-local Colors = {
-	Black = '#282828',
-	Orange = '#ff8200',
-	Red = '#ff8080',
-	Blue = '#33aaff',
-	Purple = '#a370eb',
-	BluerBlue = '#88ddff',
-	Green = '#6acc4f',
-	GruvGreen = '#54A33F',
-	Cyan = '#689d6a',
-	OffWhite = '#ebdbb2',
-	White = '#fdf5e0',
-	DarkGrey = '#5b5b5b',
-	OtherGrey = '#333333',
-	LightGrey = '#cac4b3',
-}
+local Colors = require('colors')
 
 vim.opt.termguicolors = true
 vim.opt.tabstop=4
@@ -281,6 +266,16 @@ local servers = {
 	bashls = {}
 }
 
+local treesitter_highlighters = {
+	'javascript',
+	'yaml',
+	'python',
+	'typescript',
+	'go',
+	'bash',
+	'dockerfile'
+}
+
 require('lazy').setup({
 	'folke/which-key.nvim',
 	'joshdick/onedark.vim',
@@ -534,15 +529,7 @@ require('lazy').setup({
 
 			-- Enable Tree-sitter-based syntax highlighting.
 			require('nvim-treesitter.configs').setup({
-				ensure_installed = {
-					'javascript',
-					'yaml',
-					'python',
-					'typescript',
-					'go',
-					'bash',
-					'dockerfile'
-				},
+				ensure_installed = treesitter_highlighters,
 				auto_install = true,
 				highlight = {
 					enable = true,
