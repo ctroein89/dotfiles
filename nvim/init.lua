@@ -9,7 +9,7 @@ local signs = {
 local Colors = require('colors')
 
 vim.opt.termguicolors = true
-vim.opt.tabstop=4
+vim.opt.tabstop=2
 vim.opt.smartcase = true
 vim.opt.wrap = true
 -- vim.opt.linebreak = true
@@ -418,6 +418,15 @@ require('lazy').setup({
 				},
 			})
 		end
+	},
+	{
+		'stevearc/oil.nvim',
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {},
+		-- Optional dependencies
+		-- dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
 	},
 	{
 		'andythigpen/nvim-coverage',
