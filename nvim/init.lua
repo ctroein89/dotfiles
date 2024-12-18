@@ -9,7 +9,7 @@ local signs = {
 local Colors = require('colors')
 
 vim.opt.termguicolors = true
-vim.opt.tabstop=2
+vim.opt.tabstop=4
 vim.opt.smartcase = true
 vim.opt.wrap = true
 -- vim.opt.linebreak = true
@@ -766,6 +766,3 @@ require('lazy').setup({
 
 -- vim.wo.foldmethod = 'expr'
 -- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-
-vim.opt.tabstop=2
-vim.cmd("set tabstop=2")
