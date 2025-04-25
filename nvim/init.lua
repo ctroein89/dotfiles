@@ -233,6 +233,8 @@ vim.api.nvim_set_keymap("n", "<Leader>di", ":lua require('dapui').toggle()<CR>",
 vim.o.updatetime = 250
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
+vim.env.PATH = vim.fn.stdpath "data" .. "/mason/bin" .. (is_windows and "; " or ":") .. vim.env.PATH
+
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -252,8 +254,17 @@ vim.g.mapleader = ' ' -- Make sure to set `mapleader` before lazy so your mappin
 local servers = {
 	eslint = {},
 	pyright = {},
-	pylsp = {},
+	-- pylsp = {},
 	html = {},
+	rust_analyser = {
+		settings = {
+			["rust-analyzer"] = {
+				diagnostics = {
+					enable = true,
+				},
+			},
+		},
+	},
 	lua_ls = {
 		Lua = {
 			diagnostics = {
@@ -273,6 +284,7 @@ local treesitter_highlighters = {
 	'typescript',
 	'go',
 	'bash',
+	'rust',
 	'dockerfile'
 }
 
@@ -293,27 +305,31 @@ require('lazy').setup({
 		'nvim-lualine/lualine.nvim',
 		dependencies = { 'nvim-tree/nvim-web-devicons', opt = true },
 		config = function()
+			customTheme = {
+				normal = {
+					a = { fg = Colors.Black, bg = Colors.Orange },
+					b = { fg = Colors.White, bg = Colors.DarkGrey },
+					c = { fg = Colors.OffWhite, bg = Colors.Black },
+				},
+				insert = { a = { fg = Colors.Black, bg = Colors.Blue } },
+				visual = { a = { fg = Colors.Black, bg = Colors.Green } },
+				replace = { a = { fg = Colors.Black, bg = Colors.Red } },
+				inactive = {
+					a = { fg = Colors.White, bg = Colors.Black },
+					b = { fg = Colors.White, bg = Colors.Black },
+					c = { fg = Colors.Black, bg = Colors.Black },
+				},
+			}
 			require('lualine').setup {
 			options = {
 				icons_enabled = true,
 				-- theme = 'auto',
-				theme = {
-					normal = {
-						a = { fg = Colors.Black, bg = Colors.Purple },
-						b = { fg = Colors.White, bg = Colors.DarkGrey },
-						c = { fg = Colors.OffWhite, bg = Colors.Black },
-					},
-					insert = { a = { fg = Colors.Black, bg = Colors.Blue } },
-					visual = { a = { fg = Colors.Black, bg = Colors.Green } },
-					replace = { a = { fg = Colors.Black, bg = Colors.Red } },
-					inactive = {
-						a = { fg = Colors.White, bg = Colors.Black },
-						b = { fg = Colors.White, bg = Colors.Black },
-						c = { fg = Colors.Black, bg = Colors.Black },
-					},
-				},
-				component_separators = { left = '|', right = '|'},
-				section_separators = { left = '', right = '' },
+				theme = 'gruvbox_dark',
+				theme = customTheme,
+				-- component_separators = { left = '|', right = '|'},
+				component_separators = '',
+				-- section_separators = { left = '', right = '' },
+				section_separators = { left = '', right = '' },
 				disabled_filetypes = {
 					statusline = {},
 					winbar = {},
@@ -330,7 +346,9 @@ require('lazy').setup({
 			sections = {
 				lualine_a = {
 					{
-						'mode', left = '', right_padding = 2,
+						'mode',
+						-- left = '',
+						right_padding = 2,
 					},
 				},
 				lualine_b = {
@@ -378,7 +396,11 @@ require('lazy').setup({
 				lualine_x = {'encoding', 'fileformat', 'filetype'},
 				lualine_y = {'progress'},
 				lualine_z = {
-					{ 'location', separator = { right = '' }, left_padding = 2 },
+					{
+						'location',
+						-- separator = { right = '' },
+						left_padding = 2
+					},
 				}
 			},
 			inactive_sections = {
@@ -416,6 +438,7 @@ require('lazy').setup({
 					changedelete = { text = '~' },
 					untracked    = { text = ':' },
 				},
+				current_line_blame = true,
 			})
 		end
 	},
@@ -681,8 +704,22 @@ require('lazy').setup({
 					settings = lsp.settings
 				}
 
+				echo(lsp, opts)
+
 				nvim_lsp[lsp].setup(opts)
 			end
+			--[[
+			nvim_lsp.rust_analyzer.setup {
+				settings = {
+					["rust-analyzer"] = {
+						diagnostics = {
+							enable = true,
+						},
+					},
+				},
+			}
+			--]]
+			--[[
 			nvim_lsp.pylsp.setup {
 				cmd = {"pylsp"},
 				filetypes = {"python"},
@@ -711,6 +748,7 @@ require('lazy').setup({
 				},
 				on_attach = on_attach
 			}
+			--]]
 		end
 	},
 	{
@@ -737,6 +775,10 @@ require('lazy').setup({
 		"akinsho/toggleterm.nvim",
 		version = "*",
 		config = true,
+	},
+	{
+		"rust-lang/rust.vim",
+		version = "*",
 	},
 	{
 		"lukas-reineke/virt-column.nvim", opts = {
