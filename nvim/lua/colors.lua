@@ -13,6 +13,7 @@ local Colors = {
 	DarkGrey = '#5b5b5b',
 	OtherGrey = '#333333',
 	LightGrey = '#cac4b3',
+	LightOrange = '#ffc284',
 }
 
 return Colors

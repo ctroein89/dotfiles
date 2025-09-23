@@ -58,7 +58,7 @@ vim.api.nvim_set_hl(
 		ctermbg=DarkGrey,
 		ctermfg=NONE,
 		bg=Colors.DarkGrey,
-		fg=Colors.White
+		fg=Colors.LightOrange
 	}
 )
 vim.api.nvim_set_hl(0, "WarningMsg", { ctermfg=88, fg=Colors.Red })
@@ -538,10 +538,12 @@ require('lazy').setup({
 		'williamboman/mason-lspconfig.nvim',
 		dependencies = { 'nvim-lspconfig' },
 		after = { "mason.nvim" },
+		version = "^1.0.0",
 		config = function()
 			require('mason-lspconfig').setup({
 				ensure_installed = servers,
-				automatic_installation = true
+				-- automatic_installation = true
+				automatic_installation = false
 			})
 		end
 	},
