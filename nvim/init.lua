@@ -190,7 +190,7 @@ vim.api.nvim_create_autocmd({"BufEnter"}, {
 	pattern = "*.js, *.ts",
 	callback = function()
 		-- place (show) the signs immediately after loading
-		require("coverage").load(true)
+		require("code-cov").try_load()
 	end,
 })
 vim.api.nvim_create_autocmd(
@@ -453,47 +453,34 @@ require('lazy').setup({
 		dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
 	},
 	{
-		'andythigpen/nvim-coverage',
-		dependencies = {
-			'nvim-lua/plenary.nvim',
-			'asb/lua-xmlreader'
-		},
-		rocks = { 'lua-xmlreader' },
+		dir = '/Users/ctroein/dev/code-cov',
+		name = 'code-cov',
 		config = function()
-			require("coverage").setup({
-				auto_reload = true,
-				commands = true,
-				highlights = {
-					-- customize highlight groups created by the plugin
-					-- supports style, fg, bg, sp (see :h highlight-gui)
-					covered = {
-						fg = Colors.Green;
-					},
-					partial = {
-						fg = Colors.Orange
-					},
-					uncovered = {
-						fg = Colors.Red
-					},
-				},
-				signs = {
-					-- use your own highlight groups or text markers
-					covered = { hl = "CoverageCovered", text = "▎" },
-					uncovered = { hl = "CoverageUncovered", text = "▎" },
-				},
-				summary = {
-					-- customize the summary pop-up
-					-- minimum coverage threshold (used for highlighting)
-					min_coverage = 0.0,
-				},
-				lang = {
-					javascript = {
-						coverage_file = "./es6/coverage/lcov.info",
-							-- "./coverage/lcov.info",
-							-- "../coverage/lcov.info"
-					},
-				},
+			require('code-cov').setup({
+				auto_load = false,  -- handled by autocmd above
+				sign_covered = '▎',
+				sign_uncovered = '▎',
+				sign_partial = '▎',
 			})
+			
+			-- Set up highlight colors to match your theme
+			vim.api.nvim_set_hl(0, 'CodeCovCovered', { fg = Colors.Green })
+			vim.api.nvim_set_hl(0, 'CodeCovUncovered', { fg = Colors.Red })
+			vim.api.nvim_set_hl(0, 'CodeCovPartial', { fg = Colors.Orange })
+			
+			-- Keybindings for coverage commands
+			vim.keymap.set('n', '<leader>cl', '<cmd>CoverageLoad<cr>', { desc = 'Load coverage' })
+			vim.keymap.set('n', '<leader>ct', '<cmd>CoverageToggle<cr>', { desc = 'Toggle coverage' })
+			vim.keymap.set('n', '<leader>cc', '<cmd>CoverageClear<cr>', { desc = 'Clear coverage' })
+			vim.keymap.set('n', '<leader>cs', function()
+				local stats = require('code-cov').get_stats()
+				if stats then
+					vim.notify(string.format('Coverage: %d/%d lines (%.1f%%)', 
+						stats.covered, stats.total, stats.percentage), vim.log.levels.INFO)
+				else
+					vim.notify('No coverage data for this file', vim.log.levels.WARN)
+				end
+			end, { desc = 'Show coverage stats' })
 		end
 	},
 	{
