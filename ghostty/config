@@ -91,8 +91,10 @@ palette = 14=#70c0b1
 # White
 palette = 15=#fdf5e0
 
-custom-shader = /Users/ctroein/dev/crt-shader-with-chromatic-aberration-glow-scanlines-dot-matrix/crt-shader-with-chromatic-aberration-glow-scanlines-dot-matrix.glsl
+custom-shader = ~/.config/ghostty/crt.glsl
+# custom-shader = ~/dev/ghostty-shaders/glow-rgbsplit-twitchy.glsl
 
 unfocused-split-opacity = .8
-window-padding-x = 10
-window-padding-y = 10
+window-padding-x = 8
+window-padding-y = 8
+# shell-integration-features = "adjust_selection"
