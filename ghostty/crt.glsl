@@ -7,17 +7,17 @@
 //-----------------------------------------------------------------------------
 
 // Transparency Settings
-const float GLOBAL_OPACITY = 0.9;        // Overall transparency (1.0 = fully opaque, 0.0 = fully transparent)
+const float GLOBAL_OPACITY = 1.0;        // Overall transparency (1.0 = fully opaque, 0.0 = fully transparent)
 
 // Chromatic Aberration Settings
 const float ABBERATION_FACTOR = 0.05;    // Strength of color splitting effect (default: 0.05)
 
 // Glow/Bloom Settings
 const float DIM_CUTOFF = 0.28;           // Threshold for what's considered a dim pixel (default: 0.35)
-const float BRIGHT_CUTOFF = 0.35;        // Threshold for what's considered a bright pixel
+const float BRIGHT_CUTOFF = 0.65;        // Threshold for what's considered a bright pixel
 const float BRIGHT_BOOST = 1.2;          // Brightness multiplier for bright pixels (default: 1.2)
-const float DIM_GLOW = 0.05;             // Glow intensity for dim pixels (default: 0.05)
-const float BRIGHT_GLOW = 0.05;          // Glow intensity for bright pixels (default: 0.10)
+const float DIM_GLOW = 0.025;             // Glow intensity for dim pixels (default: 0.05)
+const float BRIGHT_GLOW = 0.10;          // Glow intensity for bright pixels (default: 0.10)
 const float COLOR_GLOW = 0.10;            // Color bleeding intensity (default: 0.3)
 
 // Scanline Settings
@@ -27,6 +27,14 @@ const float SCANLINE_DENSITY = 0.25;     // Density/thickness of scanlines (defa
 // Dot Matrix Settings
 const float MASK_INTENSITY = 0.1;          // Strength of the dot pattern (default: 0.3)
 const float MASK_SIZE = 1.0;             // Size of the dots (default: 1.0)
+
+// Rolling Scan / Glitch Band Settings
+const float SCAN_PERIOD = 5.0;             // Seconds per full sweep (default: 2.0)
+const float SCAN_WIDTH = 0.002;             // Height of the scan band as fraction of screen (default: 0.06)
+const float SCAN_SOFT_EDGE = 0.03;         // Soft falloff around the band edges (default: 0.03)
+const float SCAN_BRIGHTNESS = 0.01;        // Extra brightness added inside the band (default: 0.12)
+const float SCAN_DISTORTION = 3.0;         // Horizontal pixel displacement in the band (default: 3.0)
+const float SCAN_NOISE_SCALE = 80.0;       // Noise granularity along the band edge (default: 80.0)
 
 //-----------------------------------------------------------------------------
 // Color Space Conversion Functions
@@ -113,6 +121,19 @@ const vec3[24] samples = {
     vec3(-2.8769733643574344, 3.9652268864187157, 0.20412414523193154)
 };
 
+// Simple hash for procedural noise (returns 0..1)
+float hash(float n) {
+    return fract(sin(n) * 43758.5453123);
+}
+
+// 1D value noise
+float valueNoise(float x) {
+    float i = floor(x);
+    float f = fract(x);
+    float u = f * f * (3.0 - 2.0 * f); // smoothstep interpolation
+    return mix(hash(i), hash(i + 1.0), u);
+}
+
 // Chromatic aberration time variation
 float offsetFunction(float iTime) {
     float amount = 1.0;
@@ -130,11 +151,32 @@ float offsetFunction(float iTime) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord.xy / iResolution.xy;
 
+    // --- Rolling Scan / Glitch Band ---
+    // Scan position sweeps 0..1 over SCAN_PERIOD seconds
+    float scanPos = fract(iTime / SCAN_PERIOD);
+    // Distance from current fragment to the scan line (wrapped)
+    float distToScan = abs(uv.y - scanPos);
+    distToScan = min(distToScan, 1.0 - distToScan); // wrap around top/bottom
+
+    // Add noise to the band edge so it looks ragged/glitchy
+    float edgeNoise = valueNoise(uv.y * SCAN_NOISE_SCALE + iTime * 12.0) * 0.5
+                    + valueNoise(uv.y * SCAN_NOISE_SCALE * 3.0 - iTime * 7.0) * 0.25;
+    float noisyWidth = SCAN_WIDTH * (0.6 + 0.8 * edgeNoise);
+
+    // Band intensity: 1 inside the core, soft falloff at edges
+    float bandCore = smoothstep(noisyWidth + SCAN_SOFT_EDGE, noisyWidth, distToScan);
+    float bandEdge = smoothstep(noisyWidth + SCAN_SOFT_EDGE * 2.5, noisyWidth, distToScan);
+
+    // Horizontal distortion: shifts pixels sideways inside the band
+    float shiftNoise = (valueNoise(uv.y * 200.0 + iTime * 30.0) - 0.5) * 2.0;
+    float hShift = bandCore * SCAN_DISTORTION * shiftNoise / iResolution.x;
+    vec2 distortedUv = uv + vec2(hShift, 0.0);
+
     // Apply Chromatic Aberration with alpha
     float amount = offsetFunction(iTime * 0.1);
-    vec4 colR = texture(iChannel0, vec2(uv.x-ABBERATION_FACTOR*amount / iResolution.x, uv.y));
-    vec4 colG = texture(iChannel0, uv);
-    vec4 colB = texture(iChannel0, vec2(uv.x+ABBERATION_FACTOR*amount / iResolution.x, uv.y));
+    vec4 colR = texture(iChannel0, vec2(distortedUv.x-ABBERATION_FACTOR*amount / iResolution.x, distortedUv.y));
+    vec4 colG = texture(iChannel0, distortedUv);
+    vec4 colB = texture(iChannel0, vec2(distortedUv.x+ABBERATION_FACTOR*amount / iResolution.x, distortedUv.y));
 
     // Combine colors while preserving alpha
     vec4 col = vec4(colR.r, colG.g, colB.b, colG.a);
@@ -180,6 +222,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Combine Effects while preserving alpha
     vec3 final_color = processedColor.rgb * mask;
     vec3 with_scanline = mix(final_color, vec3(0.0), scanline);
+
+    // --- Apply rolling scan band brightness ---
+    // Slight brightness boost + faint color shift in the band
+    // with_scanline += bandEdge * SCAN_BRIGHTNESS * vec3(0.7, 0.85, 1.0);
+    // Subtle extra flicker inside the core
+    float flicker = 1.0 + bandCore * 0.03 * sin(iTime * 120.0);
+    with_scanline *= flicker;
 
     // Apply global opacity while preserving the original alpha relationship
     float final_alpha = processedColor.a * GLOBAL_OPACITY;
