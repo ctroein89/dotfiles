@@ -10,12 +10,12 @@
 const float GLOBAL_OPACITY = 1.0;        // Overall transparency (1.0 = fully opaque, 0.0 = fully transparent)
 
 // Chromatic Aberration Settings
-const float ABBERATION_FACTOR = 0.05;    // Strength of color splitting effect (default: 0.05)
+const float ABBERATION_FACTOR = 0.025;    // Strength of color splitting effect (default: 0.05)
 
 // Glow/Bloom Settings
 const float DIM_CUTOFF = 0.28;           // Threshold for what's considered a dim pixel (default: 0.35)
 const float BRIGHT_CUTOFF = 0.65;        // Threshold for what's considered a bright pixel
-const float BRIGHT_BOOST = 1.2;          // Brightness multiplier for bright pixels (default: 1.2)
+const float BRIGHT_BOOST = 1.1;          // Brightness multiplier for bright pixels (default: 1.2)
 const float DIM_GLOW = 0.025;             // Glow intensity for dim pixels (default: 0.05)
 const float BRIGHT_GLOW = 0.10;          // Glow intensity for bright pixels (default: 0.10)
 const float COLOR_GLOW = 0.10;            // Color bleeding intensity (default: 0.3)
@@ -29,12 +29,13 @@ const float MASK_INTENSITY = 0.1;          // Strength of the dot pattern (defau
 const float MASK_SIZE = 1.0;             // Size of the dots (default: 1.0)
 
 // Rolling Scan / Glitch Band Settings
-const float SCAN_PERIOD = 5.0;             // Seconds per full sweep (default: 2.0)
-const float SCAN_WIDTH = 0.002;             // Height of the scan band as fraction of screen (default: 0.06)
+const float SCAN_PERIOD = 20.0;             // Seconds per full sweep (default: 2.0)
+const float SCAN_WIDTH = 0.001;             // Height of the scan band as fraction of screen (default: 0.06)
 const float SCAN_SOFT_EDGE = 0.03;         // Soft falloff around the band edges (default: 0.03)
 const float SCAN_BRIGHTNESS = 0.01;        // Extra brightness added inside the band (default: 0.12)
-const float SCAN_DISTORTION = 3.0;         // Horizontal pixel displacement in the band (default: 3.0)
+const float SCAN_DISTORTION = 2.0;         // Horizontal pixel displacement in the band (default: 3.0)
 const float SCAN_NOISE_SCALE = 80.0;       // Noise granularity along the band edge (default: 80.0)
+const float SCAN_ABERRATION_BOOST = 4.0;   // Extra chromatic aberration multiplier inside the scan band (default: 8.0)
 
 //-----------------------------------------------------------------------------
 // Color Space Conversion Functions
@@ -161,7 +162,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Add noise to the band edge so it looks ragged/glitchy
     float edgeNoise = valueNoise(uv.y * SCAN_NOISE_SCALE + iTime * 12.0) * 0.5
                     + valueNoise(uv.y * SCAN_NOISE_SCALE * 3.0 - iTime * 7.0) * 0.25;
-    float noisyWidth = SCAN_WIDTH * (0.6 + 0.8 * edgeNoise);
+    float noisyWidth = SCAN_WIDTH * (0.3 + 0.4 * edgeNoise);
 
     // Band intensity: 1 inside the core, soft falloff at edges
     float bandCore = smoothstep(noisyWidth + SCAN_SOFT_EDGE, noisyWidth, distToScan);
@@ -173,10 +174,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 distortedUv = uv + vec2(hShift, 0.0);
 
     // Apply Chromatic Aberration with alpha
+    // Boost aberration inside the rolling scan band
     float amount = offsetFunction(iTime * 0.1);
-    vec4 colR = texture(iChannel0, vec2(distortedUv.x-ABBERATION_FACTOR*amount / iResolution.x, distortedUv.y));
+    float abberFactor = ABBERATION_FACTOR * (1.0 + bandEdge * SCAN_ABERRATION_BOOST);
+    vec4 colR = texture(iChannel0, vec2(distortedUv.x - abberFactor * amount / iResolution.x, distortedUv.y));
     vec4 colG = texture(iChannel0, distortedUv);
-    vec4 colB = texture(iChannel0, vec2(distortedUv.x+ABBERATION_FACTOR*amount / iResolution.x, distortedUv.y));
+    vec4 colB = texture(iChannel0, vec2(distortedUv.x + abberFactor * amount / iResolution.x, distortedUv.y));
 
     // Combine colors while preserving alpha
     vec4 col = vec4(colR.r, colG.g, colB.b, colG.a);
@@ -210,7 +213,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec4 processedColor = toRgb(dest);
 
     // Apply Scanlines
-    float scanline = abs(sin(fragCoord.y) * SCANLINE_DENSITY * SCANLINE_INTENSITY);
+    float scanline = 0.0; // abs(sin(fragCoord.y) * SCANLINE_DENSITY * SCANLINE_INTENSITY);
 
     // Apply Dot Matrix
     vec2 mask_pos = fragCoord.xy * MASK_SIZE;
