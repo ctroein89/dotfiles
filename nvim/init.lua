@@ -30,6 +30,8 @@ vim.opt.list = true
 vim.opt.cursorline = true
 vim.cmd("set scrolloff=999")
 
+vim.o.winborder = 'rounded'
+
 vim.cmd("set t_Co=256")
 -- Run ":so $VIMRUNTIME/syntax/hitest.vim" to see current coloring
 
@@ -926,6 +928,20 @@ require('lazy').setup({
 				ft = { "markdown", "Avante" },
 			},
 		},
+	},
+	{
+		'mikesmithgh/borderline.nvim',
+		enabled = true,
+		lazy = true,
+		event = 'VeryLazy',
+		dependencies = {
+			'ibhagwan/fzf-lua'
+		},
+		config = function()
+			require('borderline').setup({
+				--  ...
+			})
+		end,
 	},
 })
 
